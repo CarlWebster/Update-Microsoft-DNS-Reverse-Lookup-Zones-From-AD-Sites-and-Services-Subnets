@@ -195,9 +195,9 @@
 	No objects are output from this script.  This script creates a plain text document.
 .NOTES
 	NAME: Update-ReverseZonesFromSubnets.ps1
-	VERSION: 1.00
+	VERSION: 1.10
 	AUTHOR: Carl Webster
-	LASTEDIT: April 19, 2020
+	LASTEDIT: April 29, 2020
 #>
 
 
@@ -246,6 +246,10 @@ Param(
 #Version 1.0 released to the community on 20-Apr-2020
 #This script was created for a customer whose CIO requested this script be given to the community.
 #
+#Version 1.10 29-Apr-2020
+#	Cleaned up some code and typos driving my OCD up the wall
+#	Reformatted the terminating Write-Error messages to make them more visible and readable in the console
+#
 
 Set-StrictMode -Version Latest
 
@@ -263,7 +267,15 @@ If($currentPrincipal.IsInRole( [Security.Principal.WindowsBuiltInRole]::Administ
 }
 Else
 {
-	Write-Verbose "$(Get-Date): This is NOT an elevated PowerShell session. Script will exit."
+	Write-Error "
+	`n`n
+	`t`t
+	This is NOT an elevated PowerShell session.
+	`n`n
+	`t`t
+	Script will exit.
+	`n`n
+	"
 	Exit
 }
 
@@ -304,67 +316,6 @@ If($Folder -ne "")
 	}
 }
 
-If(![String]::IsNullOrEmpty($SmtpServer) -and [String]::IsNullOrEmpty($From) -and [String]::IsNullOrEmpty($To))
-{
-	Write-Error "
-	`n`n
-	`tYou specified an SmtpServer but did not include a From or To email address.
-	`n`n
-	`tScript cannot continue.
-	`n`n"
-	Exit
-}
-If(![String]::IsNullOrEmpty($SmtpServer) -and [String]::IsNullOrEmpty($From) -and ![String]::IsNullOrEmpty($To))
-{
-	Write-Error "
-	`n`n
-	`tYou specified an SmtpServer and a To email address but did not include a From email address.
-	`n`n
-	`tScript cannot continue.
-	`n`n"
-	Exit
-}
-If(![String]::IsNullOrEmpty($SmtpServer) -and [String]::IsNullOrEmpty($To) -and ![String]::IsNullOrEmpty($From))
-{
-	Write-Error "
-	`n`n
-	`tYou specified an SmtpServer and a From email address but did not include a To email address.
-	`n`n
-	`tScript cannot continue.
-	`n`n"
-	Exit
-}
-If(![String]::IsNullOrEmpty($From) -and ![String]::IsNullOrEmpty($To) -and [String]::IsNullOrEmpty($SmtpServer))
-{
-	Write-Error "
-	`n`n
-	`tYou specified From and To email addresses but did not include the SmtpServer.
-	`n`n
-	`tScript cannot continue.
-	`n`n"
-	Exit
-}
-If(![String]::IsNullOrEmpty($From) -and [String]::IsNullOrEmpty($SmtpServer))
-{
-	Write-Error "
-	`n`n
-	`tYou specified a From email address but did not include the SmtpServer.
-	`n`n
-	`tScript cannot continue.
-	`n`n"
-	Exit
-}
-If(![String]::IsNullOrEmpty($To) -and [String]::IsNullOrEmpty($SmtpServer))
-{
-	Write-Error "
-	`n`n
-	`tYou specified a To email address but did not include the SmtpServer.
-	`n`n
-	`tScript cannot continue.
-	`n`n"
-	Exit
-}
-
 If($Folder -eq "")
 {
 	$Script:pwdpath = $pwd.Path
@@ -383,7 +334,7 @@ If($Script:pwdpath.EndsWith("\"))
 If($Log) 
 {
 	#start transcript logging
-	$Script:LogPath = "$Script:pwdpath\UpdateReverseZonesFromSubnetsScriptTranscript_$(Get-Date -f yyyy-MM-dd_HHmm).txt"
+	$Script:LogPath = "$($Script:pwdpath)\UpdateReverseZonesFromSubnetsScriptTranscript_$(Get-Date -f yyyy-MM-dd_HHmm).txt"
 	
 	try 
 	{
@@ -402,6 +353,79 @@ If($Dev)
 {
 	$Error.Clear()
 	$Script:DevErrorFile = "$($Script:pwdpath)\UpdateReverseZonesFromSubnetsScriptErrors_$(Get-Date -f yyyy-MM-dd_HHmm).txt"
+}
+
+If(![String]::IsNullOrEmpty($SmtpServer) -and [String]::IsNullOrEmpty($From) -and [String]::IsNullOrEmpty($To))
+{
+	Write-Error "
+	`n`n
+	`t`t
+	You specified an SmtpServer but did not include a From or To email address.
+	`n`n
+	`t`t
+	Script cannot continue.
+	`n`n"
+	Exit
+}
+If(![String]::IsNullOrEmpty($SmtpServer) -and [String]::IsNullOrEmpty($From) -and ![String]::IsNullOrEmpty($To))
+{
+	Write-Error "
+	`n`n
+	`t`t
+	You specified an SmtpServer and a To email address but did not include a From email address.
+	`n`n
+	`t`t
+	Script cannot continue.
+	`n`n"
+	Exit
+}
+If(![String]::IsNullOrEmpty($SmtpServer) -and [String]::IsNullOrEmpty($To) -and ![String]::IsNullOrEmpty($From))
+{
+	Write-Error "
+	`n`n
+	`t`t
+	You specified an SmtpServer and a From email address but did not include a To email address.
+	`n`n
+	`t`t
+	Script cannot continue.
+	`n`n"
+	Exit
+}
+If(![String]::IsNullOrEmpty($From) -and ![String]::IsNullOrEmpty($To) -and [String]::IsNullOrEmpty($SmtpServer))
+{
+	Write-Error "
+	`n`n
+	`t`t
+	You specified From and To email addresses but did not include the SmtpServer.
+	`n`n
+	`t`t
+	Script cannot continue.
+	`n`n"
+	Exit
+}
+If(![String]::IsNullOrEmpty($From) -and [String]::IsNullOrEmpty($SmtpServer))
+{
+	Write-Error "
+	`n`n
+	`t`t
+	You specified a From email address but did not include the SmtpServer.
+	`n`n
+	`t`t
+	Script cannot continue.
+	`n`n"
+	Exit
+}
+If(![String]::IsNullOrEmpty($To) -and [String]::IsNullOrEmpty($SmtpServer))
+{
+	Write-Error "
+	`n`n
+	`t`t
+	You specified a To email address but did not include the SmtpServer.
+	`n`n
+	`t`t
+	Script cannot continue.
+	`n`n"
+	Exit
 }
 
 #region email function
@@ -541,10 +565,13 @@ Function ProcessScriptSetup
 	{
 		Write-Error "
 		`n`n
-		`tUnable to find the PDCe Domain Controller.
+		`t`t
+		Unable to find the PDCe Domain Controller.
 		`n`n
-		`tScript cannot continue.
-		`n`n"
+		`t`t
+		Script cannot continue.
+		`n`n
+		"
 	}
 	
 	Write-Verbose "$(Get-Date): Will use Domain Controller $Script:ServerName"
@@ -785,9 +812,16 @@ Function ProcessScriptEnd
 	
 	#cleanup obj variables
 	$Script:Output = $Null
+	$runtime = $Null
+	$Str = $Null
+
+	Write-Verbose "$(Get-Date):                                                                                    " 
+	Write-Verbose "$(Get-Date):               This FREE script was brought to you by Conversant Group              " 
+	Write-Verbose "$(Get-Date):We design, build, and manage infrastructure for a secure, dependable user experience" 
+	Write-Verbose "$(Get-Date):                       Visit our website conversantgroup.com                        " 
+	Write-Verbose "$(Get-Date):                                                                                    " 
 }
 #endregion
-
 
 ProcessScriptSetup
 
