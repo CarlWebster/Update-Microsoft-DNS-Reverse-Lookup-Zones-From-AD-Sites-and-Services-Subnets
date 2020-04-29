@@ -6,4 +6,9 @@
 #Version 1.0 released to the community on 20-Apr-2020
 #This script was created for a customer whose CIO requested this script be given to the community.
 
+#Version 1.10 29-Apr-2020
+#	Cleaned up some code and typos driving my OCD up the wall
+#	Reformatted the terminating Write-Error messages to make them more visible and readable in the console
+
+
 
