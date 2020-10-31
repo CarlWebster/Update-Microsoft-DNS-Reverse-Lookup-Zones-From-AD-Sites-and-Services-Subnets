@@ -814,12 +814,6 @@ Function ProcessScriptEnd
 	$Script:Output = $Null
 	$runtime = $Null
 	$Str = $Null
-
-	Write-Verbose "$(Get-Date):                                                                                    " 
-	Write-Verbose "$(Get-Date):               This FREE script was brought to you by Conversant Group              " 
-	Write-Verbose "$(Get-Date):We design, build, and manage infrastructure for a secure, dependable user experience" 
-	Write-Verbose "$(Get-Date):                       Visit our website conversantgroup.com                        " 
-	Write-Verbose "$(Get-Date):                                                                                    " 
 }
 #endregion
 
